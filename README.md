@@ -68,7 +68,7 @@ This is your host IPv6 address: ::1
 Horizon is now available at http://10.31.241.154/dashboard
 Keystone is serving at http://10.31.241.154/identity/
 The default users are: admin and demo
-The password: nvidia
+The password: nomoresecret
 ```
 
 Note:
