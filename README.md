@@ -88,9 +88,9 @@ ubuntu@sas03:~$ sudo vim /etc/nova/nova.conf
 
 Double quote the pci variables:
 
-> 
+> pci_passthrough_whitelist={"vendor_id":"10de","product_id":"102d"}
 
->
+> pci_alias={"vendor_id":"10de","product_id":"102d","name":"K80","device_type":"type-PCI"}
 
 Re-build devstack:
 
