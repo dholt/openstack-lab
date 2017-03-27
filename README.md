@@ -45,7 +45,7 @@ ubuntu@sas03:~/devstack$ lspci -n | grep a1
 87:00.0 0302: 10de:102d (rev a1)
 ```
 
-Configure passthrough GPU devices in nova (and modify floating ip range if it will conflict with local networks)
+Configure floating IP range and nova scheduler to allow PCI passthrough devices
 
 ```
 ubuntu@sas03:~/devstack$ cat <<EOF >> local.conf
@@ -55,10 +55,6 @@ FLOATING_RANGE=192.168.111.0/24
 # Add scheduler filter for PCI passthrough devices
 scheduler_default_filters = RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,SameHostFilter,DifferentHostFilter,PciPassthroughFilter
 scheduler_available_filters = nova.scheduler.filters.all_filters
-# whitelist GPU devices for passthrough on compute node
-pci_passthrough_whitelist={"vendor_id":"10de","product_id":"102d"}
-# create aliases for GPU devices on head node
-pci_alias={"vendor_id":"10de","product_id":"102d","name":"K80","device_type":"type-PCI"}
 EOF
 ```
 
@@ -76,7 +72,7 @@ The password: nvidia
 ```
 
 Note:
-The devstack install script removes the double quotes for the pci variables which causes the script to fail.
+The devstack install script removes the double quotes for the pci variables from local.conf which causes the script to fail.
 
 https://bugs.launchpad.net/devstack/+bug/1374118
 
@@ -86,18 +82,23 @@ Until this is figured out, manually edit the nova configuration to fix quotes in
 ubuntu@sas03:~$ sudo vim /etc/nova/nova.conf
 ```
 
-Double quote the pci variables:
+Add the following lines to configure passthrough GPU devices in nova:
 
 > pci_passthrough_whitelist={"vendor_id":"10de","product_id":"102d"}
 
 > pci_alias={"vendor_id":"10de","product_id":"102d","name":"K80","device_type":"type-PCI"}
 
-Re-build devstack:
+After modifying `nova.conf`, connect to the running screen session and restart nova-api and nova-compute:
 
 ```
-ubuntu@sas03:~$ ./unstack.sh
-ubuntu@sas03:~$ ./stack.sh
+ubuntu@sas03:~$ screen -x stack
 ```
+
+> ctrl-a ' 6 enter ("n-api"), ctrl-c, ctrl-p, enter
+
+> ctrl-a ' 16 enter ("n-cpu"), ctrl-c, ctrl-p, enter
+
+> ctrl-a, d (exit screen)
 
 Set environment variables to connect to OpenStack using 'admin' account
 
@@ -121,27 +122,10 @@ ubuntu@sas03:~/devstack$ ssh cirros@172.24.4.6
 password: cubswin:)
 ```
 
-Tips:
+To re-deploy:
 
-* After installing, run `screen -x stack` to connect to screen session
 * Tear down: `ubuntu@sas03:~$ ./unstack.sh`
 * Re-deploy: `ubuntu@sas03:~$ ./stack.sh`
-
-Debuging:
-
-If modifying `nova.conf`, connect to screen session and restart nova-api, nova-scheduler and/or nova-compute:
-
-```
-ubuntu@sas03:~$ screen -x stack
-```
-
-> ctrl-a ' 6 enter ("n-api"), ctrl-c, ctrl-p, enter
-
-> ctrl-a ' 13 enter ("n-sch"), ctrl-c, ctrl-p, enter
-
-> ctrl-a ' 16 enter ("n-cpu"), ctrl-c, ctrl-p, enter
-
-> ctrl-a, d (exit screen)
 
 NOTE:
 
