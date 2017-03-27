@@ -3,26 +3,26 @@
 ## Configuring devstack for GPU passthrough
 
 ### Links:
-* devstack: https://github.com/openstack-dev/devstack
-* up-to-date passthrough info: https://docs.openstack.org/admin-guide/compute-pci-passthrough.html
+* Devstack: https://github.com/openstack-dev/devstack
+* Up-to-date passthrough info: https://docs.openstack.org/admin-guide/compute-pci-passthrough.html
 
 ### Notes:
-* after installing, run `screen -x stack` to connect to screen session
-* make sure GPU driver is not loaded
+* After installing, run `screen -x stack` to connect to screen session
+* Make sure GPU driver is not loaded on the host
 
 ### Steps:
 
-Configure host (compute node) kernel parameters (required):
+Add the following line to `/etc/default/grub` to configure the host kernel parameters: 
+
+> GRUB_CMDLINE_LINUX="intel_iommu=on iommu=pt pci=realloc pci=nocrs"
 
 ```
-ubuntu@sas03:~/devstack$ grep ^GRUB_CMDLINE_LINUX= /etc/default/grub
-GRUB_CMDLINE_LINUX="intel_iommu=on iommu=pt pci=realloc pci=nocrs"
-ubuntu@sas03:~/devstack$ sudo vim /etc/default/grub
-ubuntu@sas03:~/devstack$ sudo update-grub
+ubuntu@sas03:~$ sudo vim /etc/default/grub
+ubuntu@sas03:~$ sudo update-grub
 ubuntu@sas03:~$ sudo reboot
 ```
 
-Clone repo
+Clone the devstack repo
 
 ```
 ubuntu@sas03:~$ git clone https://github.com/openstack-dev/devstack.git
@@ -62,8 +62,8 @@ pci_alias={\"vendor_id\":\"10de\", \"product_id\":\"102d\", \"name\":\"K80\", \"
 EOF
 ```
 
-The devstack install script will remove the double quotes if they are not escaped
-nova.conf does not need to escape double-quotes but does need to be valid json so requires the double quotes
+The devstack install script will remove the double quotes if they are not escaped.
+`nova.conf` does not need to escape double-quotes but does need to be valid json so requires the double quotes
 
 Build
 
@@ -87,7 +87,9 @@ ubuntu@sas03:~$ sudo vim /etc/nova/nova.conf
 Connect to screen session and restart nova-api and nova-compute
 
 > ctrl-a ' 6 enter ("n-api"), ctrl-c, ctrl-p, enter
+
 > ctrl-a ' 16 enter ("n-cpu"), ctrl-c, ctrl-p, enter
+
 > ctrl-a, d (exit screen)
 
 ```
@@ -122,7 +124,9 @@ Re-deploy: `ubuntu@sas03:~$ ./stack.sh`
 
 NOTE:
 * These are deprecated but it does not work without pci_ prefix, will throw error about 'alias not defined'
+
 > Option "pci_passthrough_whitelist" from group "DEFAULT" is deprecated. Use option "passthrough_whitelist" from group "pci".
+
 > Option "pci_alias" from group "DEFAULT" is deprecated. Use option "alias" from group "pci".
 
 * Had to manually add pcipassthrough filter to scheduler in nova.conf, already existed. May have been because the variable was not correct
