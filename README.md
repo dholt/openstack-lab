@@ -139,3 +139,4 @@ NOTE:
 * provision image with packer, deploy with terraform, maybe a couple of terraform examples for small cluster
 * nodes pre-installed with devstack, packer, terraform, ubuntu image to base packer image on, packer and terraform files
 * need to look into numa node, scheduling, affinity, etc.
+* deploy images with docker-machine (doesn't support GPUs out of the box yet without libnvidia-container)
