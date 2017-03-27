@@ -2,15 +2,15 @@
 
 ## Configuring devstack for GPU passthrough
 
-Links:
+###Links:
 * devstack: https://github.com/openstack-dev/devstack
 * up-to-date passthrough info: https://docs.openstack.org/admin-guide/compute-pci-passthrough.html
 
-Notes:
+###Notes:
 * after installing, run `screen -x stack` to connect to screen session
 * make sure GPU driver is not loaded
 
-Steps:
+###Steps:
 
 Configure host (compute node) kernel parameters (required):
 
