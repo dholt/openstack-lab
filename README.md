@@ -26,6 +26,7 @@ ubuntu@sas03:~$ sudo reboot
 Clone the devstack repo
 
 ```
+ubuntu@sas03:~$ sudo apt-get -y install git
 ubuntu@sas03:~$ git clone https://github.com/openstack-dev/devstack.git
 ubuntu@sas03:~$ cd devstack/
 ```
@@ -57,9 +58,9 @@ FLOATING_RANGE=192.168.111.0/24
 scheduler_default_filters = RetryFilter,AvailabilityZoneFilter,RamFilter,DiskFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter,SameHostFilter,DifferentHostFilter,PciPassthroughFilter
 scheduler_available_filters = nova.scheduler.filters.all_filters
 # whitelist GPU devices for passthrough on compute node
-pci_passthrough_whitelist={\"vendor_id\":\"10de\", \"product_id\":\"102d\"}
+pci_passthrough_whitelist={"vendor_id":"10de","product_id":"102d"}
 # create aliases for GPU devices on head node
-pci_alias={\"vendor_id\":\"10de\", \"product_id\":\"102d\", \"name\":\"K80\", \"device_type\":\"type-PCI\"}
+pci_alias={"vendor_id":"10de","product_id":"102d","name":"K80","device_type":"type-PCI"}
 EOF
 ```
 
