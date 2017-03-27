@@ -117,8 +117,8 @@ Create instance
 ```
 ubuntu@sas03:~/devstack$ openstack server create --flavor m1.xlarge --image cirros-0.3.5-x86_64-disk --wait test-pci
 ubuntu@sas03:~/devstack$ openstack floating ip create public
-ubuntu@sas03:~/devstack$ openstack server add floating ip test-pci 172.24.4.6
-ubuntu@sas03:~/devstack$ ssh cirros@172.24.4.6
+ubuntu@sas03:~/devstack$ openstack server add floating ip test-pci 192.168.111.4
+ubuntu@sas03:~/devstack$ ssh cirros@192.168.111.4
 password: cubswin:)
 ```
 
