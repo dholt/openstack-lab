@@ -62,9 +62,6 @@ pci_alias={\"vendor_id\":\"10de\", \"product_id\":\"102d\", \"name\":\"K80\", \"
 EOF
 ```
 
-The devstack install script will remove the double quotes if they are not escaped.
-`nova.conf` does not need to escape double-quotes but does need to be valid json so requires the double quotes
-
 Build
 
 ```
@@ -78,22 +75,26 @@ The default users are: admin and demo
 The password: nvidia
 ```
 
-Manually edit nova configuration to fix quotes in 'pci_passthrough_whitelist' and 'pci_alias' json
+Note:
+The devstack install script removes the double quotes for the pci variables which causes the script to fail.
+
+Until this is figured out, manually edit the nova configuration to fix quotes in 'pci_passthrough_whitelist' and 'pci_alias' json:
 
 ```
 ubuntu@sas03:~$ sudo vim /etc/nova/nova.conf
 ```
 
-Connect to screen session and restart nova-api and nova-compute
+Double quote the pci variables:
 
-> ctrl-a ' 6 enter ("n-api"), ctrl-c, ctrl-p, enter
+> 
 
-> ctrl-a ' 16 enter ("n-cpu"), ctrl-c, ctrl-p, enter
+>
 
-> ctrl-a, d (exit screen)
+Re-build devstack:
 
 ```
-ubuntu@sas03:~$ screen -x stack
+ubuntu@sas03:~$ ./unstack.sh
+ubuntu@sas03:~$ ./stack.sh
 ```
 
 Set environment variables to connect to OpenStack using 'admin' account
@@ -117,6 +118,22 @@ ubuntu@sas03:~/devstack$ openstack server add floating ip test-pci 172.24.4.6
 ubuntu@sas03:~/devstack$ ssh cirros@172.24.4.6
 password: cubswin:)
 ```
+
+Debuging:
+
+If modifying `nova.conf`, connect to screen session and restart nova-api, nova-scheduler and/or nova-compute:
+
+```
+ubuntu@sas03:~$ screen -x stack
+```
+
+> ctrl-a ' 6 enter ("n-api"), ctrl-c, ctrl-p, enter
+
+> ctrl-a ' 13 enter ("n-sch"), ctrl-c, ctrl-p, enter
+
+> ctrl-a ' 16 enter ("n-cpu"), ctrl-c, ctrl-p, enter
+
+> ctrl-a, d (exit screen)
 
 Tear down: `ubuntu@sas03:~$ ./unstack.sh`
 
