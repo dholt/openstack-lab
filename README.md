@@ -9,6 +9,7 @@
 ### Notes:
 * After installing, run `screen -x stack` to connect to screen session
 * Make sure GPU driver is not loaded on the host
+* Deploy machine with Ubuntu 14.04 LTS, had issues with volumes causing stack.sh script to fail on 16.04 LTS
 
 ### Steps:
 
@@ -77,6 +78,8 @@ The password: nvidia
 
 Note:
 The devstack install script removes the double quotes for the pci variables which causes the script to fail.
+
+https://bugs.launchpad.net/devstack/+bug/1374118
 
 Until this is figured out, manually edit the nova configuration to fix quotes in 'pci_passthrough_whitelist' and 'pci_alias' json:
 
