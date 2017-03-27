@@ -26,7 +26,6 @@ ubuntu@sas03:~$ sudo reboot
 Clone the devstack repo
 
 ```
-ubuntu@sas03:~$ sudo apt-get -y install git
 ubuntu@sas03:~$ git clone https://github.com/openstack-dev/devstack.git
 ubuntu@sas03:~$ cd devstack/
 ```
