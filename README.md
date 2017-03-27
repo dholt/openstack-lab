@@ -82,7 +82,7 @@ Until this is figured out, manually edit the nova configuration to fix quotes in
 ubuntu@sas03:~$ sudo vim /etc/nova/nova.conf
 ```
 
-Add the following lines to configure passthrough GPU devices in nova:
+Add the following lines to configure passthrough GPU devices in nova in the `[DEFAULT]` section of `/etc/nova/nova.conf`:
 
 > pci_passthrough_whitelist={"vendor_id":"10de","product_id":"102d"}
 
