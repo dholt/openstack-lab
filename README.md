@@ -9,7 +9,6 @@
 ### Notes:
 * After installing, run `screen -x stack` to connect to screen session
 * Make sure GPU driver is not loaded on the host
-* Deploy machine with Ubuntu 14.04 LTS, had issues with volumes causing stack.sh script to fail on 16.04 LTS
 
 ### Steps:
 
