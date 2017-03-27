@@ -7,9 +7,8 @@
 * Up-to-date passthrough info: https://docs.openstack.org/admin-guide/compute-pci-passthrough.html
 
 ### Notes:
-* After installing, run `screen -x stack` to connect to screen session
-* Make sure GPU driver is not loaded on the host
 * Provision node with Ubuntu 16.04 LTS
+* Make sure GPU driver is not loaded on the host
 
 ### Steps:
 
@@ -122,6 +121,12 @@ ubuntu@sas03:~/devstack$ ssh cirros@172.24.4.6
 password: cubswin:)
 ```
 
+Tips:
+
+* After installing, run `screen -x stack` to connect to screen session
+* Tear down: `ubuntu@sas03:~$ ./unstack.sh`
+* Re-deploy: `ubuntu@sas03:~$ ./stack.sh`
+
 Debuging:
 
 If modifying `nova.conf`, connect to screen session and restart nova-api, nova-scheduler and/or nova-compute:
@@ -138,18 +143,13 @@ ubuntu@sas03:~$ screen -x stack
 
 > ctrl-a, d (exit screen)
 
-Tear down: `ubuntu@sas03:~$ ./unstack.sh`
-
-Re-deploy: `ubuntu@sas03:~$ ./stack.sh`
-
 NOTE:
+
 * These are deprecated but it does not work without pci_ prefix, will throw error about 'alias not defined'
 
 > Option "pci_passthrough_whitelist" from group "DEFAULT" is deprecated. Use option "passthrough_whitelist" from group "pci".
 
 > Option "pci_alias" from group "DEFAULT" is deprecated. Use option "alias" from group "pci".
-
-* Had to manually add pcipassthrough filter to scheduler in nova.conf, already existed. May have been because the variable was not correct
 
 ## Lab Ideas:
 * provision image with packer, deploy with terraform, maybe a couple of terraform examples for small cluster
