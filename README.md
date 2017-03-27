@@ -9,6 +9,7 @@
 ### Notes:
 * After installing, run `screen -x stack` to connect to screen session
 * Make sure GPU driver is not loaded on the host
+* Provision node with Ubuntu 16.04 LTS
 
 ### Steps:
 
