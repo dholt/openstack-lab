@@ -112,14 +112,33 @@ Add GPU device to existing flavor
 ubuntu@sas03:~/devstack$ openstack flavor set m1.xlarge --property "pci_passthrough:alias"="K80:1"
 ```
 
-Create instance
+Create instance (use IP from second command for third command)
 
 ```
 ubuntu@sas03:~/devstack$ openstack server create --flavor m1.xlarge --image cirros-0.3.5-x86_64-disk --wait test-pci
 ubuntu@sas03:~/devstack$ openstack floating ip create public
 ubuntu@sas03:~/devstack$ openstack server add floating ip test-pci 192.168.111.4
+```
+
+Modify security group for demo project to allow access to new instance
+
+```
+ubuntu@sas03:~/devstack$ openstack security group rule create --proto icmp --dst-port 0 $(openstack security group list --project demo -c ID -f value)
+ubuntu@sas03:~/devstack$ openstack security group rule create --proto tcp --dst-port 22 $(openstack security group list --project demo -c ID -f value)
+```
+
+Connect to instance:
+
+```
 ubuntu@sas03:~/devstack$ ssh cirros@192.168.111.4
 password: cubswin:)
+```
+
+Check for NVIDIA GPU devices:
+
+```
+$ dmesg | grep 10de
+[    0.261861] pci 0000:00:05.0: [10de:102d] type 0 class 0x000302
 ```
 
 To re-deploy:
