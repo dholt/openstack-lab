@@ -141,6 +141,23 @@ $ dmesg | grep 10de
 [    0.261861] pci 0000:00:05.0: [10de:102d] type 0 class 0x000302
 ```
 
+Create Ubuntu image with NVIDIA GPU drivers:
+
+```
+ubuntu@sas03:~/devstack$ openstack server delete test-pci
+ubuntu@sas03:~/devstack$ wget http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+ubuntu@sas03:~/devstack$ openstack image create --disk-format qcow2 --container-format bare --public --file xenial-server-cloudimg-amd64-disk1.img ubuntu1604
+ubuntu@sas03:~/devstack$ openstack keypair create ubuntu | tee ~/.ssh/id_rsa
+ubuntu@sas03:~/devstack$ chmod 600 ~/.ssh/id_rsa
+ubuntu@sas03:~/devstack$ openstack server create --flavor m1.xlarge --image ubuntu1604 --key-name ubuntu --wait ubuntu
+ubuntu@sas03:~/devstack$ openstack server add floating ip ubuntu $(openstack floating ip list -f value -c 'Floating IP Address')
+ubuntu@sas03:~/devstack$ ssh-keygen -f "/home/ubuntu/.ssh/known_hosts" -R $(openstack floating ip list -f value -c 'Floating IP Address')
+ubuntu@sas03:~/devstack$ ssh ubuntu@$(openstack floating ip list -f value -c 'Floating IP Address')
+ubuntu@ubuntu:~$ lspci | grep -i nv
+00:05.0 3D controller: NVIDIA Corporation GK210GL [Tesla K80] (rev a1)
+ubuntu@ubuntu:~$ curl -s https://raw.githubusercontent.com/dholt/bootstrap/master/bootstrap.sh | bash -
+```
+
 To re-deploy:
 
 * Tear down: `ubuntu@sas03:~$ ./unstack.sh`
