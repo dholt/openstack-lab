@@ -159,7 +159,7 @@ NOTE:
 ```
 ubuntu@sas03:~$ cd devstack
 ubuntu@sas03:~/devstack$ source openrc admin
-ubuntu@sas03:~/devstack$ openstack flavor create g1.k80x2 --ram 32768 --disk 20 --vcpus 16
+ubuntu@sas03:~/devstack$ openstack flavor create g1.k80x2 --ram 32768 --disk 20 --vcpus 16 --property "pci_passthrough:alias"="K80:2"
 ```
 
 ## Launch a GPU instance, provision NVIDIA drivers and docker and run DIGITS:
