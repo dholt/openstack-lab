@@ -156,6 +156,8 @@ ubuntu@sas03:~/devstack$ ssh ubuntu@$(openstack floating ip list -f value -c 'Fl
 ubuntu@ubuntu:~$ lspci | grep -i nv
 00:05.0 3D controller: NVIDIA Corporation GK210GL [Tesla K80] (rev a1)
 ubuntu@ubuntu:~$ curl -s https://raw.githubusercontent.com/dholt/bootstrap/master/bootstrap.sh | bash -
+ubuntu@ubuntu:~$ nvidia-smi -L
+GPU 0: Tesla K80 (UUID: GPU-cbc911b4-7c6a-cd5f-3e33-0da557a8717f)
 ```
 
 To re-deploy:
