@@ -154,10 +154,19 @@ NOTE:
 
 > Option "pci_alias" from group "DEFAULT" is deprecated. Use option "alias" from group "pci".
 
-
-## Launch an instance running DIGITS:
+## Create new flavor with multiple GPUs:
 
 ```
+ubuntu@sas03:~$ cd devstack
+ubuntu@sas03:~/devstack$ source openrc admin
+ubuntu@sas03:~/devstack$ openstack flavor create g1.k80x2 --ram 32768 --disk 20 --vcpus 16
+```
+
+## Launch a GPU instance, provision NVIDIA drivers and docker and run DIGITS:
+
+```
+ubuntu@sas03:~$ cd devstack
+ubuntu@sas03:~/devstack$ source openrc admin
 ubuntu@sas03:~/devstack$ openstack server delete test-pci
 ubuntu@sas03:~/devstack$ wget http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
 ubuntu@sas03:~/devstack$ openstack image create --disk-format qcow2 --container-format bare --public --file xenial-server-cloudimg-amd64-disk1.img ubuntu1604
