@@ -112,12 +112,12 @@ Add GPU device to existing flavor
 ubuntu@sas03:~/devstack$ openstack flavor set m1.xlarge --property "pci_passthrough:alias"="K80:1"
 ```
 
-Create instance (use IP from second command for third command)
+Create instance:
 
 ```
 ubuntu@sas03:~/devstack$ openstack server create --flavor m1.xlarge --image cirros-0.3.5-x86_64-disk --wait test-pci
 ubuntu@sas03:~/devstack$ openstack floating ip create public
-ubuntu@sas03:~/devstack$ openstack server add floating ip test-pci 192.168.111.4
+ubuntu@sas03:~/devstack$ openstack server add floating ip test-pci $(openstack floating ip list -f value -c 'Floating IP Address')
 ```
 
 Modify security group for demo project to allow access to new instance
@@ -130,7 +130,7 @@ ubuntu@sas03:~/devstack$ openstack security group rule create --proto tcp --dst-
 Connect to instance:
 
 ```
-ubuntu@sas03:~/devstack$ ssh cirros@192.168.111.4
+ubuntu@sas03:~/devstack$ ssh cirros@$(openstack floating ip list -f value -c 'Floating IP Address')
 password: cubswin:)
 ```
 
