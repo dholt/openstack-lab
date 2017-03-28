@@ -162,7 +162,7 @@ ubuntu@ubuntu:~$ newgrp docker
 ubuntu@ubuntu:~$ nvidia-docker run --name digits -d -p 8080:5000 nvidia/digits
 ```
 
-Visit the DIGITS web interface on the host: http://<host ip address>:8080/
+Visit the DIGITS web interface at the host IP: http://1.2.3.4:8080/
 
 To re-deploy:
 
