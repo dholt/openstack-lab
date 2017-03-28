@@ -141,7 +141,21 @@ $ dmesg | grep 10de
 [    0.261861] pci 0000:00:05.0: [10de:102d] type 0 class 0x000302
 ```
 
-Create Ubuntu image with NVIDIA GPU drivers:
+To re-deploy:
+
+* Tear down: `ubuntu@sas03:~$ ./unstack.sh`
+* Re-deploy: `ubuntu@sas03:~$ ./stack.sh`
+
+NOTE:
+
+* These are deprecated but it does not work without pci_ prefix, will throw error about 'alias not defined'
+
+> Option "pci_passthrough_whitelist" from group "DEFAULT" is deprecated. Use option "passthrough_whitelist" from group "pci".
+
+> Option "pci_alias" from group "DEFAULT" is deprecated. Use option "alias" from group "pci".
+
+
+## Launch an instance running DIGITS:
 
 ```
 ubuntu@sas03:~/devstack$ openstack server delete test-pci
@@ -164,15 +178,3 @@ ubuntu@ubuntu:~$ nvidia-docker run --name digits -d -p 8080:5000 nvidia/digits
 
 Visit the DIGITS web interface at the host IP: http://1.2.3.4:8080/
 
-To re-deploy:
-
-* Tear down: `ubuntu@sas03:~$ ./unstack.sh`
-* Re-deploy: `ubuntu@sas03:~$ ./stack.sh`
-
-NOTE:
-
-* These are deprecated but it does not work without pci_ prefix, will throw error about 'alias not defined'
-
-> Option "pci_passthrough_whitelist" from group "DEFAULT" is deprecated. Use option "passthrough_whitelist" from group "pci".
-
-> Option "pci_alias" from group "DEFAULT" is deprecated. Use option "alias" from group "pci".
