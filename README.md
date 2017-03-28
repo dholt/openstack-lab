@@ -141,6 +141,57 @@ $ dmesg | grep 10de
 [    0.261861] pci 0000:00:05.0: [10de:102d] type 0 class 0x000302
 ```
 
+Delete test instance:
+
+```
+ubuntu@sas03:~/devstack$ openstack server delete test-pci
+```
+
+## Create new flavor with multiple GPUs:
+
+```
+ubuntu@sas03:~/devstack$ openstack flavor create g1.k80x2 --ram 32768 --disk 20 --vcpus 16 --property "pci_passthrough:alias"="K80:2"
+```
+
+## Launch a multi-GPU instance, provision NVIDIA drivers, nvidia-docker and run DIGITS:
+
+Create a new image based on Ubuntu 16.04
+
+```
+ubuntu@sas03:~/devstack$ wget http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+ubuntu@sas03:~/devstack$ openstack image create --disk-format qcow2 --container-format bare --public --file xenial-server-cloudimg-amd64-disk1.img ubuntu1604
+```
+
+Create an ssh keypair to use with the Ubuntu image:
+
+```
+ubuntu@sas03:~/devstack$ openstack keypair create ubuntu | tee ~/.ssh/id_rsa
+ubuntu@sas03:~/devstack$ chmod 600 ~/.ssh/id_rsa
+```
+
+Launch new instance:
+
+```
+ubuntu@sas03:~/devstack$ IP=$(openstack floating ip list -f value -c 'Floating IP Address')
+ubuntu@sas03:~/devstack$ openstack server create --flavor g1.k80x2 --image ubuntu1604 --key-name ubuntu --wait ubuntu
+ubuntu@sas03:~/devstack$ openstack server add floating ip ubuntu $IP
+ubuntu@sas03:~/devstack$ ssh-keygen -f ~/.ssh/known_hosts -R $IP
+ubuntu@sas03:~/devstack$ ssh -L0.0.0.0:8080:localhost:8080 ubuntu@$IP
+ubuntu@ubuntu:~$ lspci | grep -i nv
+00:05.0 3D controller: NVIDIA Corporation GK210GL [Tesla K80] (rev a1)
+00:06.0 3D controller: NVIDIA Corporation GK210GL [Tesla K80] (rev a1)
+ubuntu@ubuntu:~$ curl -s https://raw.githubusercontent.com/dholt/bootstrap/master/bootstrap.sh | bash -
+ubuntu@ubuntu:~$ nvidia-smi -L
+
+
+ubuntu@ubuntu:~$ newgrp docker
+ubuntu@ubuntu:~$ nvidia-docker run --name digits -d -p 8080:5000 nvidia/digits
+```
+
+Visit the DIGITS web interface at the host IP: http://1.2.3.4:8080/
+
+## Notes:
+
 To re-deploy:
 
 * Tear down: `ubuntu@sas03:~$ ./unstack.sh`
@@ -153,37 +204,4 @@ NOTE:
 > Option "pci_passthrough_whitelist" from group "DEFAULT" is deprecated. Use option "passthrough_whitelist" from group "pci".
 
 > Option "pci_alias" from group "DEFAULT" is deprecated. Use option "alias" from group "pci".
-
-## Create new flavor with multiple GPUs:
-
-```
-ubuntu@sas03:~$ cd devstack
-ubuntu@sas03:~/devstack$ source openrc admin
-ubuntu@sas03:~/devstack$ openstack flavor create g1.k80x2 --ram 32768 --disk 20 --vcpus 16 --property "pci_passthrough:alias"="K80:2"
-```
-
-## Launch a GPU instance, provision NVIDIA drivers and docker and run DIGITS:
-
-```
-ubuntu@sas03:~$ cd devstack
-ubuntu@sas03:~/devstack$ source openrc admin
-ubuntu@sas03:~/devstack$ openstack server delete test-pci
-ubuntu@sas03:~/devstack$ wget http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
-ubuntu@sas03:~/devstack$ openstack image create --disk-format qcow2 --container-format bare --public --file xenial-server-cloudimg-amd64-disk1.img ubuntu1604
-ubuntu@sas03:~/devstack$ openstack keypair create ubuntu | tee ~/.ssh/id_rsa
-ubuntu@sas03:~/devstack$ chmod 600 ~/.ssh/id_rsa
-ubuntu@sas03:~/devstack$ openstack server create --flavor m1.xlarge --image ubuntu1604 --key-name ubuntu --wait ubuntu
-ubuntu@sas03:~/devstack$ openstack server add floating ip ubuntu $(openstack floating ip list -f value -c 'Floating IP Address')
-ubuntu@sas03:~/devstack$ ssh-keygen -f "/home/ubuntu/.ssh/known_hosts" -R $(openstack floating ip list -f value -c 'Floating IP Address')
-ubuntu@sas03:~/devstack$ ssh -L0.0.0.0:8080:localhost:8080 ubuntu@$(openstack floating ip list -f value -c 'Floating IP Address')
-ubuntu@ubuntu:~$ lspci | grep -i nv
-00:05.0 3D controller: NVIDIA Corporation GK210GL [Tesla K80] (rev a1)
-ubuntu@ubuntu:~$ curl -s https://raw.githubusercontent.com/dholt/bootstrap/master/bootstrap.sh | bash -
-ubuntu@ubuntu:~$ nvidia-smi -L
-GPU 0: Tesla K80 (UUID: GPU-cbc911b4-7c6a-cd5f-3e33-0da557a8717f)
-ubuntu@ubuntu:~$ newgrp docker
-ubuntu@ubuntu:~$ nvidia-docker run --name digits -d -p 8080:5000 nvidia/digits
-```
-
-Visit the DIGITS web interface at the host IP: http://1.2.3.4:8080/
 
