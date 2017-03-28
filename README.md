@@ -184,6 +184,7 @@ ubuntu@ubuntu:~$ curl -s https://raw.githubusercontent.com/dholt/bootstrap/maste
 ubuntu@ubuntu:~$ nvidia-smi -L
 GPU 0: Tesla K80 (UUID: GPU-cbc911b4-7c6a-cd5f-3e33-0da557a8717f)
 GPU 1: Tesla K80 (UUID: GPU-22cfc3bd-8ef0-bf38-f656-b4c9f0a722a6)
+ubuntu@ubuntu:~$ sudo systemctl start nvidia-docker
 ubuntu@ubuntu:~$ newgrp docker
 ubuntu@ubuntu:~$ nvidia-docker run --name digits -d -p 8080:5000 nvidia/digits
 ```
