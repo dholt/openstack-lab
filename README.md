@@ -35,16 +35,6 @@ Customize
 ubuntu@sas03:~/devstack$ cp samples/local.conf .
 ```
 
-Get GPU device IDs
-
-```
-ubuntu@sas03:~/devstack$ lspci -n | grep a1
-04:00.0 0302: 10de:102d (rev a1)
-05:00.0 0302: 10de:102d (rev a1)
-86:00.0 0302: 10de:102d (rev a1)
-87:00.0 0302: 10de:102d (rev a1)
-```
-
 Configure floating IP range and nova scheduler to allow PCI passthrough devices
 
 ```
@@ -80,6 +70,16 @@ Until this is figured out, manually edit the nova configuration to fix quotes in
 
 ```
 ubuntu@sas03:~$ sudo vim /etc/nova/nova.conf
+```
+
+Get GPU device IDs
+
+```
+ubuntu@sas03:~/devstack$ lspci -n | grep 10de
+04:00.0 0302: 10de:102d (rev a1)
+05:00.0 0302: 10de:102d (rev a1)
+86:00.0 0302: 10de:102d (rev a1)
+87:00.0 0302: 10de:102d (rev a1)
 ```
 
 Add the following lines to configure passthrough GPU devices in nova in the `[DEFAULT]` section of `/etc/nova/nova.conf`:
