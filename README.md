@@ -2,6 +2,8 @@
 
 ## Configuring devstack for GPU passthrough
 
+_The devstack setup script is destructive, you should not run this on a machine you care about_
+
 ### Links:
 * Devstack: https://github.com/openstack-dev/devstack
 * Up-to-date passthrough info: https://docs.openstack.org/admin-guide/compute-pci-passthrough.html
@@ -198,6 +200,8 @@ To re-deploy:
 
 * Tear down: `ubuntu@sas03:~$ ./unstack.sh`
 * Re-deploy: `ubuntu@sas03:~$ ./stack.sh`
+
+If the system needs to be rebooted, re-run `stack.sh` to re-deploy.
 
 NOTE:
 
