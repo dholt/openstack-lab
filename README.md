@@ -2,7 +2,7 @@
 
 ## Configuring devstack for GPU passthrough
 
-_The devstack setup script is destructive, you should not run this on a machine you care about_
+_WARNING: The devstack setup script makes a large number of changes to the system where it's run, you should not run this on a machine you care about_
 
 ### Links:
 * Devstack: https://github.com/openstack-dev/devstack
