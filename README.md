@@ -64,7 +64,7 @@ The password: nomoresecret
 ```
 
 Note:
-The devstack install script removes the double quotes for the pci variables from local.conf which causes the script to fail.
+The devstack install script removes double quotes for the pci passthrough variables from local.conf which causes the script to fail when nova fails to launch.
 
 https://bugs.launchpad.net/devstack/+bug/1374118
 
@@ -84,11 +84,13 @@ ubuntu@sas03:~/devstack$ lspci -n | grep 10de
 ubuntu@sas03:~$ sudo vim /etc/nova/nova.conf
 ```
 
-Add the following lines to configure passthrough GPU devices in nova in the `[DEFAULT]` section of `/etc/nova/nova.conf`, substituting in the proper device IDs from `lspci`:
+Add the following lines to configure passthrough GPU devices in nova in a new `[pci]` section of `/etc/nova/nova.conf`, substituting in the proper device IDs from `lspci`:
 
-> pci_passthrough_whitelist={"vendor_id":"10de","product_id":"102d"}
+> [pci]
 
-> pci_alias={"vendor_id":"10de","product_id":"102d","name":"K80","device_type":"type-PCI"}
+> passthrough_whitelist={"vendor_id":"10de","product_id":"102d"}
+
+> alias={"vendor_id":"10de","product_id":"102d","name":"K80","device_type":"type-PCI"}
 
 After modifying `nova.conf`, connect to the running screen session and restart nova-api and nova-compute:
 
@@ -209,12 +211,3 @@ If you encounter an error regarding an existing volume group when re-running `st
 ubuntu@dgx09:~/devstack$ sudo vgremove stack-volumes-default
   Volume group "stack-volumes-default" successfully removed
 ```
-
-NOTE:
-
-* These are deprecated but it does not work without pci_ prefix, will throw error about 'alias not defined'
-
-> Option "pci_passthrough_whitelist" from group "DEFAULT" is deprecated. Use option "passthrough_whitelist" from group "pci".
-
-> Option "pci_alias" from group "DEFAULT" is deprecated. Use option "alias" from group "pci".
-
