@@ -203,6 +203,13 @@ To re-deploy:
 
 If the system needs to be rebooted, re-run `stack.sh` to re-deploy.
 
+If you encounter an error regarding an existing volume group when re-running `stack.sh`, remove the volume group with:
+
+```
+ubuntu@dgx09:~/devstack$ sudo vgremove stack-volumes-default
+  Volume group "stack-volumes-default" successfully removed
+```
+
 NOTE:
 
 * These are deprecated but it does not work without pci_ prefix, will throw error about 'alias not defined'
