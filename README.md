@@ -68,7 +68,7 @@ The devstack install script removes the double quotes for the pci variables from
 
 https://bugs.launchpad.net/devstack/+bug/1374118
 
-Until this is figured out, manually edit the nova configuration to fix quotes in 'pci_passthrough_whitelist' and 'pci_alias' json:
+Until this is figured out, manually edit the nova configuration to add passthrough devices:
 
 Get GPU device IDs
 
@@ -84,7 +84,7 @@ ubuntu@sas03:~/devstack$ lspci -n | grep 10de
 ubuntu@sas03:~$ sudo vim /etc/nova/nova.conf
 ```
 
-Add the following lines to configure passthrough GPU devices in nova in the `[DEFAULT]` section of `/etc/nova/nova.conf`:
+Add the following lines to configure passthrough GPU devices in nova in the `[DEFAULT]` section of `/etc/nova/nova.conf`, substituting in the proper device IDs from `lspci`:
 
 > pci_passthrough_whitelist={"vendor_id":"10de","product_id":"102d"}
 
