@@ -102,7 +102,7 @@ ubuntu@sas03:~$ screen -x stack
 
 > ctrl-a ' 16 enter ("n-cpu"), ctrl-c, ctrl-p, enter
 
-> ctrl-a, d (exit screen)
+> ctrl-a d (detach from screen session)
 
 Set environment variables to connect to OpenStack using 'admin' account
 
