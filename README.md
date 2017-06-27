@@ -29,6 +29,7 @@ Clone the devstack repo
 ```
 ubuntu@sas03:~$ git clone https://github.com/openstack-dev/devstack.git
 ubuntu@sas03:~$ cd devstack/
+ubuntu@sas03:~$ git checkout stable/ocata
 ```
 
 Customize
